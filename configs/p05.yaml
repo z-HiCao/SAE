@@ -1,0 +1,9 @@
+# 第五篇论文：利用 CIFAR-100 的 coarse→fine 层级检查 splitting 与 absorption
+stage: p05
+activation_threshold: 0.000001
+splitting_f1_jump: 0.03
+max_split_latents: 8
+min_decoder_projection: 0.025
+min_ablation_effect: 0.05
+max_false_negatives_per_parent: 200
+

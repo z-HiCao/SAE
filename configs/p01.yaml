@@ -1,0 +1,10 @@
+# 第一篇论文：在共享层级概念向量上训练低维重建模型
+stage: p01
+hidden_dim: 32
+batch_size: 256
+steps: 1200
+learning_rate: 0.003
+weight_decay: 0.0
+noise_densities: [0.0, 0.02, 0.05, 0.10]
+represented_norm_threshold: 0.10
+

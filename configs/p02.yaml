@@ -1,0 +1,9 @@
+# 第二篇论文：从第一阶段瓶颈激活中恢复 SAE feature
+stage: p02
+expansion_factor: 4
+batch_size: 256
+steps: 1600
+learning_rate: 0.001
+l1_coefficient: 0.001
+activation_threshold: 0.000001
+

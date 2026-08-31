@@ -1,0 +1,8 @@
+status: accepted
+date: 2026-08-31
+scope: 初始项目骨架与P01到P05连续最小实现
+reviewer: Codex初始结构审阅
+notes:
+  - 正式训练前仍需人工阅读本目录全部文件
+  - 修改核心张量边界、SAE定义或阶段产物后应重新审阅
+

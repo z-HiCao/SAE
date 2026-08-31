@@ -1,0 +1,11 @@
+文件,类或函数,为什么需要,数学或工程操作,输入,输出,上游,下游,移除或替换影响,正确性验证
+data/cifar100.py,prepare_shared_cifar100,保证五阶段同样本同标签,固定抽样并构造层级概念矩阵,base config,manifest和npy数组,CLI prepare,P01/P03/P04/P05,样本将无法严格对齐,test_concept_matrix和sample id检查
+stages/p01_superposition.py,ToyTiedReconstructor,在已知feature上制造低维叠加,h=Wx且x_hat=ReLU(W转置h+b),概念矩阵[B,120],瓶颈[B,32]和重建,共享数据,P02,没有可知ground truth的superposition阶段,比较线性/ReLU和represented features
+sae/models.py,ReLUSAE,复现第二篇SAE feature思想,z=ReLU(Wenc(x-b))且x_hat=Wdec z+b并归一化decoder,激活[B,d],latent和重建,P01 hidden,P02 metrics/P05,无法验证从叠加中恢复feature,test_sae_shapes
+sae/models.py,BatchTopKSAE,复现主体论文稀疏激活,训练时全batch保留B乘K项并校准gamma,激活[B,d],稀疏z[B,w],P03 activations,P03 metrics,稀疏机制与论文不对应,test_batch_topk_budget
+sae/models.py,MatryoshkaBatchTopKSAE,复现嵌套字典重建,多个前缀m分别重建并平均损失,激活[B,d],总损失和full reconstruction,BatchTopK,P03 trainer,不能研究层级宽度目标,test_matryoshka_loss
+metrics/monosemanticity.py,monosemanticity_scores,逐latent量化高激活样本语义一致性,用二次和恒等式避免N乘N矩阵,激活[N,w]和语义嵌入[N,e],MS[w],P03 latent,P03表图,主体论文定量评价缺失,test_ms_equivalence
+models/vision.py,extract_vision_embeddings,在同一图像上提取真实VLM激活,processor加冻结视觉塔前向,IndexedCIFAR100,激活[N,d]和sample ids,P03/P04 config,SAE训练,只能停留在toy激活,缓存复用和sample id相等检查
+sae/models.py,UniversalSAE,对齐两个VLM的共享latent,模型专属encoder加共享TopK索引加模型专属decoder,两组对齐激活,共享z和cross reconstruction,P03 CLIP与P04 SigLIP,P04 universality/P05,第四篇核心链断裂,test_universal_shapes
+metrics/universality.py,cross_reconstruction_matrix,检验共享code是否含另一模型信息,encode i再decode j并计算R2,两个模型激活,2乘2 R2矩阵,UniversalSAE,P04 metrics,只能凭同索引误判共享概念,test_universal_shapes
+metrics/absorption.py,absorption_report,检查parent latent的recall hole和child contribution,F1 splitting加decoder在parent probe上的消融贡献,激活 latent decoder coarse fine,每parent报告,P02/P04,P05 metrics,第五篇核心失败模式无法检验,test_absorption_fixture

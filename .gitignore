@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+data/raw/
+data/shared/
+outputs/
+*.pt
+*.npy
+*.npz
+.DS_Store
+

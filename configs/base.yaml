@@ -1,0 +1,18 @@
+# 所有阶段共享的根配置
+seed: 42
+device: auto
+dtype: float32
+allow_unreviewed_code: false
+
+paths:
+  data_root: data
+  shared_root: data/shared
+  output_root: outputs
+
+dataset:
+  name: cifar100
+  download: true
+  train_limit: 5000
+  test_limit: 1000
+  num_workers: 0
+

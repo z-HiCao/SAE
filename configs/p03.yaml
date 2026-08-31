@@ -1,0 +1,16 @@
+# 第三篇论文：在单个 CLIP 视觉语言模型上训练 Matryoshka BatchTopK SAE
+stage: p03
+model_name: openai/clip-vit-base-patch32
+model_kind: clip
+model_batch_size: 16
+sae_expansion_factor: 4
+reuse_p02_expansion: true
+sae_k: 16
+matryoshka_fractions: [0.125, 0.25, 0.5, 1.0]
+sae_batch_size: 256
+sae_steps: 2000
+learning_rate: 0.001
+top_images: 16
+visualized_latents: 12
+intervention_latents: 32
+intervention_quantile: 0.95

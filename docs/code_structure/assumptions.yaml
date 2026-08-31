@@ -1,0 +1,28 @@
+# 论文原设置改写为同一 CIFAR-100 数据集时采用的显式假设
+dataset:
+  choice: CIFAR-100
+  reason: 同时提供轻量图像、100个fine概念和20个coarse层级概念
+  limitation: 32乘32图像和类别语义远窄于ImageNet或自然文本
+
+p01:
+  assumption: 120维fine加coarse one-hot可作为已知真实feature
+  density_sweep: 只向原零位注入随机激活，不修改原层级概念位
+
+p02:
+  assumption: 在P01瓶颈上恢复概念可替代原论文LLM autointerpretability的最小核心论证
+  limitation: 不复现GPT解释评分和IOI
+
+p03:
+  assumption: CLIP图像级projected embedding作为单VLM激活
+  semantic_reference: CIFAR层级concept matrix
+  causal_proxy: SAE重建激活上的class centroid probe
+  limitation: 不等同论文的DINOv2 MS评价和LLaVA生成干预
+
+p04:
+  assumption: CLIP和SigLIP按同一图像对齐即可学习共享索引
+  limitation: 同索引本身不证明语义相同
+
+p05:
+  assumption: decoder沿parent均值差probe的正贡献可作为parent信息被child latent携带的证据
+  limitation: 当前只证明线性probe上的消融效应
+

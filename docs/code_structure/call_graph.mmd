@@ -1,0 +1,21 @@
+flowchart TD
+    A[CIFAR-100 图像与层级标签] --> B[共享索引与120维概念矩阵]
+    B --> C[P01 低维重建]
+    C --> D[瓶颈激活 H]
+    D --> E[P02 ReLU+L1 SAE]
+    B --> E
+    E --> F[已知概念恢复与decoder匹配]
+    F --> G[P03 CLIP激活]
+    B --> G
+    G --> H[Matryoshka BatchTopK SAE]
+    H --> I[top images、MS、R2、L0、probe干预]
+    I --> J[P04 复用CLIP激活]
+    B --> K[同索引SigLIP激活]
+    J --> L[双模型Universal SAE]
+    K --> L
+    L --> M[cross-R2、FE、CFP]
+    E --> N[P05受控absorption]
+    M --> O[P05双VLM absorption]
+    B --> N
+    B --> O
+

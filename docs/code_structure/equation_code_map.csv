@@ -1,0 +1,12 @@
+论文,公式或概念,实现位置,实验输出,验证
+Toy Models,h=Wx与x_hat=ReLU(W转置h+b),stages/p01_superposition.py:ToyTiedReconstructor,outputs/p01/train_hidden.npy和metrics.json,线性/ReLU对照与shape测试
+LLM SAE,c=ReLU(Mx+b)与x_hat=M转置c,sae/models.py:ReLUSAE,outputs/p02/sae.pt和train_latents.npy,test_sae_shapes
+LLM SAE,L=MSE加alpha乘L1,sae/models.py:ReLUSAE.compute_loss,outputs/p02/metrics.json,alpha为0退化和梯度检查
+VLM SAE,BatchTopK稀疏系数,sae/models.py:BatchTopKSAE,outputs/p03/train_latents.npy,test_batch_topk_budget
+VLM SAE,Matryoshka前缀重建,sae/models.py:MatryoshkaBatchTopKSAE.compute_loss,outputs/p03/metrics.json,test_matryoshka_loss
+VLM SAE,MS Eq.5到Eq.9,metrics/monosemanticity.py,outputs/p03/ms_latent.npy,test_ms_equivalence
+VLM SAE,latent clamp Eq.10,stages/p03_single_vlm.py:_intervention_effects,outputs/p03/metrics.json中的intervention_effects,未改latent恒等测试待扩展
+Universal SAE,共享Z与模型专属decoder,sae/models.py:UniversalSAE,outputs/p04/universal_sae.pt,test_universal_shapes
+Universal SAE,FE和CFP,metrics/universality.py,outputs/p04/firing_entropy.npy和cofire_proportion.npy,手算fixture待扩展
+Absorption,parent recall hole与absorbing decoder contribution,metrics/absorption.py,outputs/p05/metrics.json,test_absorption_fixture
+
