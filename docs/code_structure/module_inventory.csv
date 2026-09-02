@@ -1,11 +1,17 @@
-文件,类或函数,为什么需要,数学或工程操作,输入,输出,上游,下游,移除或替换影响,正确性验证
-data/cifar100.py,prepare_shared_cifar100,保证五阶段同样本同标签,固定抽样并构造层级概念矩阵,base config,manifest和npy数组,CLI prepare,P01/P03/P04/P05,样本将无法严格对齐,test_concept_matrix和sample id检查
-stages/p01_superposition.py,ToyTiedReconstructor,在已知feature上制造低维叠加,h=Wx且x_hat=ReLU(W转置h+b),概念矩阵[B,120],瓶颈[B,32]和重建,共享数据,P02,没有可知ground truth的superposition阶段,比较线性/ReLU和represented features
-sae/models.py,ReLUSAE,复现第二篇SAE feature思想,z=ReLU(Wenc(x-b))且x_hat=Wdec z+b并归一化decoder,激活[B,d],latent和重建,P01 hidden,P02 metrics/P05,无法验证从叠加中恢复feature,test_sae_shapes
-sae/models.py,BatchTopKSAE,复现主体论文稀疏激活,训练时全batch保留B乘K项并校准gamma,激活[B,d],稀疏z[B,w],P03 activations,P03 metrics,稀疏机制与论文不对应,test_batch_topk_budget
-sae/models.py,MatryoshkaBatchTopKSAE,复现嵌套字典重建,多个前缀m分别重建并平均损失,激活[B,d],总损失和full reconstruction,BatchTopK,P03 trainer,不能研究层级宽度目标,test_matryoshka_loss
-metrics/monosemanticity.py,monosemanticity_scores,逐latent量化高激活样本语义一致性,用二次和恒等式避免N乘N矩阵,激活[N,w]和语义嵌入[N,e],MS[w],P03 latent,P03表图,主体论文定量评价缺失,test_ms_equivalence
-models/vision.py,extract_vision_embeddings,在同一图像上提取真实VLM激活,processor加冻结视觉塔前向,IndexedCIFAR100,激活[N,d]和sample ids,P03/P04 config,SAE训练,只能停留在toy激活,缓存复用和sample id相等检查
-sae/models.py,UniversalSAE,对齐两个VLM的共享latent,模型专属encoder加共享TopK索引加模型专属decoder,两组对齐激活,共享z和cross reconstruction,P03 CLIP与P04 SigLIP,P04 universality/P05,第四篇核心链断裂,test_universal_shapes
-metrics/universality.py,cross_reconstruction_matrix,检验共享code是否含另一模型信息,encode i再decode j并计算R2,两个模型激活,2乘2 R2矩阵,UniversalSAE,P04 metrics,只能凭同索引误判共享概念,test_universal_shapes
-metrics/absorption.py,absorption_report,检查parent latent的recall hole和child contribution,F1 splitting加decoder在parent probe上的消融贡献,激活 latent decoder coarse fine,每parent报告,P02/P04,P05 metrics,第五篇核心失败模式无法检验,test_absorption_fixture
+"文件","类或函数","为什么需要","数学或工程操作","输入","输出","上游","下游","移除或替换影响","正确性验证"
+"data/cifar100.py","prepare_shared_cifar100","保证五阶段同样本同标签","固定抽样并构造层级概念矩阵","base config","manifest和npy数组","CLI prepare","P01/P03/P04/P05","样本将无法严格对齐","test_concept_matrix和sample id检查"
+"stages/p01_superposition.py","ToyTiedReconstructor","在已知feature上制造低维叠加","h=Wx且x_hat=ReLU(W转置h+b)","概念矩阵[B,120]","瓶颈[B,32]和重建","共享数据","P02","没有可知ground truth的superposition阶段","比较线性/ReLU和represented features"
+"sae/models.py","ReLUSAE","复现第二篇SAE feature思想","z=ReLU(Wenc(x-b))且x_hat=Wdec z+b并归一化decoder","激活[B,d]","latent和重建","P01 hidden","P02 metrics/P05","无法验证从叠加中恢复feature","test_sae_shapes"
+"metrics/disentanglement.py","select_unit_concept_mapping与one_to_one_dictionary_match","公平比较raw neuron和SAE latent并检查一对一恢复","验证集选阈值加Hungarian匹配","train/validation/test激活和真实feature方向","测试F1 purity entropy和唯一匹配","P01/P02","P02 metrics/P05","缺少它只能用高重建误判可解释性","test_disentanglement"
+"sae/models.py","BatchTopKSAE","复现主体论文稀疏激活","训练时全batch保留B乘K项并校准gamma","激活[B,d]","稀疏z[B,w]","P02/P03 activations","P02/P03 metrics","稀疏机制与论文不对应","test_batch_topk_budget"
+"sae/models.py","MatryoshkaBatchTopKSAE","复现嵌套字典重建","多个前缀m分别重建并平均损失","激活[B,d]","总损失和full reconstruction","BatchTopK","P03 trainer","不能研究层级宽度目标","test_matryoshka_loss"
+"metrics/monosemanticity.py","supported_monosemanticity_scores","逐latent量化语义一致性并排除极小支持集","用二次和恒等式避免N乘N矩阵并统计正激活数","激活[N,w]和独立语义嵌入[N,e]","MS[w]与support[w]","P03 latent","P03表图","小支持集可能把MS虚高到1","test_ms_equivalence与support_filter"
+"models/vision.py","extract_vision_embeddings","在同一图像上提取真实VLM激活","processor加冻结视觉塔前向","IndexedCIFAR100","激活[N,d]和sample ids","P03/P04 config","SAE训练","只能停留在toy激活","缓存复用和sample id相等检查"
+"models/clip_zero_shot.py","build_clip_text_prototypes与clip_zero_shot_logits","让干预落到CLIP真实图文输出而不是人工centroid probe","提示词集编码加反标准化余弦logits","类别名称和SAE重建激活","100类文本原型和logits","P03 CLIP权重","P03 interventions","删除后只能证明表示变化不能证明CLIP输出变化","test_clip_zero_shot"
+"metrics/interventions.py","evaluate_clip_interventions","修复零clamp并加入因果对照","正激活分位数加ablation injection剂量响应和匹配频率control","latent decoder MS与文本原型","逐latent干预结果","P03 SAE与CLIP文本原型","P03 metrics","删除后主体论文因果链仍为空","test_interventions"
+"sae/models.py","UniversalSAE","对齐两个VLM的共享latent","模型专属encoder加共享TopK索引加模型专属decoder","两组对齐激活","共享z和cross reconstruction","P03 CLIP与P04 SigLIP","P04 universality/P05","第四篇核心链断裂","test_universal_shapes"
+"metrics/universality.py","cross_reconstruction_matrix","检验共享code是否含另一模型信息","encode i再decode j并计算R2","两个模型激活","2乘2 R2矩阵","UniversalSAE","P04 metrics","只能凭同索引误判共享概念","test_universal_shapes"
+"metrics/cross_model_alignment.py","latent_alignment_report与alignment_null_controls","直接检验同索引是否在两个VLM中对应同一批样本和标签语义","Pearson Jaccard 标签profile cosine 置换检验 bootstrap","两组test latent和fine/coarse标签","逐latent表 对齐汇总 零假设与区间","P04 UniversalSAE","P04 metrics和图表","删除后共享索引仍可能被误当作共享语义","test_cross_model_alignment"
+"metrics/splitting.py","discover_splitting_order与evaluate_splitting_order","修正把首个main latent计为split的问题并防止测试集选顺序","discovery按F1排序 留出集固定顺序计算并集F1增益","firing和parent标签","baseline和additional splitting曲线","P02/P04 latent","P05报告","删除后splitting计数偏高且存在选择泄漏","test_splitting"
+"metrics/absorption_controls.py","child_specificity与evaluate_candidate_ablation","要求吸收候选对应具体子类并建立因果与随机基线","标签置换 FDR由上层应用 decoder置零重建 匹配随机候选","activation latent decoder parent/fine标签","候选特异性 消融rate 经验p值","P02/P04","P05 metrics CSV和图表","删除后逐样本最大贡献会系统性高估absorption","test_absorption_fixture"
+"metrics/absorption.py","discover_absorption_features与evaluate_absorption_features","以发现和评价分离的方式检查parent recall hole与child接管","固定main/split/candidate后迁移到validation/test","train/test激活 latent decoder coarse fine","每parent发现与留出评价报告","P02/P04","P05 metrics","第五篇核心失败模式无法可靠检验","test_absorption_fixture"

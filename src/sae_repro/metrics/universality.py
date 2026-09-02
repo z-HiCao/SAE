@@ -30,6 +30,34 @@ def cross_reconstruction_matrix(
     return matrix
 
 
+@torch.no_grad()
+def shuffled_target_cross_reconstruction_matrix(
+    model: torch.nn.Module,
+    inputs: list[torch.Tensor],
+    permutation: torch.Tensor,
+    device: torch.device,
+    batch_size: int,
+) -> torch.Tensor:
+    """以打乱后的目标样本计算交叉重构 R²，作为配对关系负对照。"""
+    model.eval().to(device)
+    matrix = torch.zeros((2, 2), dtype=torch.float32)
+    for source in range(2):
+        codes = []
+        for start in range(0, len(inputs[source]), batch_size):
+            batch = inputs[source][start : start + batch_size].to(device)
+            codes.append(model.encode(source, batch).cpu())
+        z = torch.cat(codes)
+        for target in range(2):
+            reconstructions = []
+            for start in range(0, len(z), batch_size):
+                reconstructions.append(
+                    model.decode(target, z[start : start + batch_size].to(device)).cpu()
+                )
+            shuffled_target = inputs[target][permutation]
+            matrix[source, target] = r2_score(shuffled_target, torch.cat(reconstructions))
+    return matrix
+
+
 def firing_entropy(latents: list[torch.Tensor], threshold: float = 0.0) -> torch.Tensor:
     """计算每个共享 latent 在两个模型间的归一化 firing entropy。"""
     counts = torch.stack([(item > threshold).sum(dim=0).float() for item in latents])
@@ -54,4 +82,3 @@ def concept_energy(latent: torch.Tensor, decoder_directions: torch.Tensor) -> to
     """计算平均激活乘 decoder direction 后的平方 L2 能量。"""
     contribution = latent.mean(dim=0)[:, None] * decoder_directions
     return torch.sum(contribution**2, dim=1)
-

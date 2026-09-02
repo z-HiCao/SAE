@@ -2,11 +2,16 @@
 Toy Models,h=Wx与x_hat=ReLU(W转置h+b),stages/p01_superposition.py:ToyTiedReconstructor,outputs/p01/train_hidden.npy和metrics.json,线性/ReLU对照与shape测试
 LLM SAE,c=ReLU(Mx+b)与x_hat=M转置c,sae/models.py:ReLUSAE,outputs/p02/sae.pt和train_latents.npy,test_sae_shapes
 LLM SAE,L=MSE加alpha乘L1,sae/models.py:ReLUSAE.compute_loss,outputs/p02/metrics.json,alpha为0退化和梯度检查
+LLM SAE,raw neuron与SAE latent同协议F1,metrics/disentanglement.py:select_unit_concept_mapping,outputs/p02/interpretability_comparison.json,验证集选阈值且测试集只评价
+LLM SAE,ground-truth与decoder一对一匹配,metrics/disentanglement.py:one_to_one_dictionary_match,outputs/p02/disentanglement_metrics.json,Hungarian结果不复用latent
 VLM SAE,BatchTopK稀疏系数,sae/models.py:BatchTopKSAE,outputs/p03/train_latents.npy,test_batch_topk_budget
 VLM SAE,Matryoshka前缀重建,sae/models.py:MatryoshkaBatchTopKSAE.compute_loss,outputs/p03/metrics.json,test_matryoshka_loss
-VLM SAE,MS Eq.5到Eq.9,metrics/monosemanticity.py,outputs/p03/ms_latent.npy,test_ms_equivalence
-VLM SAE,latent clamp Eq.10,stages/p03_single_vlm.py:_intervention_effects,outputs/p03/metrics.json中的intervention_effects,未改latent恒等测试待扩展
+VLM SAE,MS Eq.5到Eq.9,metrics/monosemanticity.py,outputs/p03/ms_latent_supported.npy和ms_support_counts.npy,test_ms_equivalence与support_filter
+VLM SAE,latent clamp Eq.10,metrics/interventions.py:evaluate_clip_interventions,outputs/p03/intervention_results.json,正激活分位数加注入消融剂量响应和匹配对照
+VLM SAE,CLIP图文logit,models/clip_zero_shot.py:clip_zero_shot_logits,outputs/p03/metrics.json中的zero-shot准确率与干预delta,反标准化与余弦方向测试
 Universal SAE,共享Z与模型专属decoder,sae/models.py:UniversalSAE,outputs/p04/universal_sae.pt,test_universal_shapes
 Universal SAE,FE和CFP,metrics/universality.py,outputs/p04/firing_entropy.npy和cofire_proportion.npy,手算fixture待扩展
-Absorption,parent recall hole与absorbing decoder contribution,metrics/absorption.py,outputs/p05/metrics.json,test_absorption_fixture
-
+Universal SAE,同索引latent跨模型语义对齐,metrics/cross_model_alignment.py,outputs/p04/latent_alignment.json和universality_controls.json,test_cross_model_alignment
+Universal SAE,配对关系负对照,stages/p04_universal_sae.py中的shuffled pair training,outputs/p04/shuffled_pair_latent_alignment.json,正确配对与错配训练同结构同训练步数比较
+Absorption,feature splitting的额外F1增益,metrics/splitting.py,outputs/p05/controlled_p02.json和universal_clip_p04.json,test_first_latent_is_baseline_not_split
+Absorption,parent recall hole与固定child候选decoder消融,metrics/absorption.py和metrics/absorption_controls.py,outputs/p05/metrics.json和candidate_latents.csv,test_absorption_fixture

@@ -1,6 +1,6 @@
 # 第三篇论文：在单个 CLIP 视觉语言模型上训练 Matryoshka BatchTopK SAE
 stage: p03
-model_name: openai/clip-vit-base-patch32
+model_name: models/openai-clip-vit-base-patch32
 model_kind: clip
 model_batch_size: 16
 sae_expansion_factor: 4
@@ -10,7 +10,27 @@ matryoshka_fractions: [0.125, 0.25, 0.5, 1.0]
 sae_batch_size: 256
 sae_steps: 2000
 learning_rate: 0.001
+activation_threshold: 0.0
+
+# 单义性评价使用独立于被解释 CLIP 的 SigLIP 图像嵌入
+semantic_reference_kind: siglip
+semantic_model_name: models/google-siglip-base-patch16-224
+semantic_model_batch_size: 8
+minimum_ms_support: 16
+ms_interval_latents: 32
+ms_interval_repeats: 50
+ms_interval_fraction: 0.80
+
 top_images: 16
 visualized_latents: 12
 intervention_latents: 32
-intervention_quantile: 0.95
+minimum_intervention_support: 16
+intervention_positive_quantile: 0.95
+intervention_doses: [0.5, 1.0, 2.0]
+
+# 使用完整 CLIP 的文本塔构造 CIFAR-100 zero-shot 类别原型
+text_batch_size: 64
+clip_prompt_templates:
+  - "a photo of a {label}"
+  - "a close-up photo of a {label}"
+  - "a blurry photo of a {label}"

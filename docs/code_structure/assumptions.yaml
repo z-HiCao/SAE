@@ -10,19 +10,21 @@ p01:
 
 p02:
   assumption: 在P01瓶颈上恢复概念可替代原论文LLM autointerpretability的最小核心论证
-  limitation: 不复现GPT解释评分和IOI
+  evaluation: 使用raw neuron对照、latent purity、Hungarian一对一方向匹配和P01 decoder消融
+  limitation: 不复现GPT解释评分和IOI，模型选择结果必须满足重建与稀疏门槛后才能宣称成功
 
 p03:
   assumption: CLIP图像级projected embedding作为单VLM激活
-  semantic_reference: CIFAR层级concept matrix
-  causal_proxy: SAE重建激活上的class centroid probe
-  limitation: 不等同论文的DINOv2 MS评价和LLaVA生成干预
+  semantic_reference: 默认使用独立SigLIP图像嵌入，也保留CIFAR层级标签后备选项
+  causal_proxy: SAE重建激活上的CLIP zero-shot图文logits
+  limitation: 不等同论文的DINOv2评价、CLIP中间token干预和LLaVA生成干预
 
 p04:
   assumption: CLIP和SigLIP按同一图像对齐即可学习共享索引
-  limitation: 同索引本身不证明语义相同
+  evaluation: 独立测试集语义分布与top图像对齐，加样本置换、latent置换和错配训练对照
+  limitation: 同索引本身不证明语义相同，跨模型相关也不证明两个模型内部计算机制相同
 
 p05:
-  assumption: decoder沿parent均值差probe的正贡献可作为parent信息被child latent携带的证据
-  limitation: 当前只证明线性probe上的消融效应
-
+  assumption: child-specific latent消融后parent probe下降可作为parent信息被子特征接管的证据
+  evaluation: discovery选择规则，validation诊断，独立test评价，并使用FDR和匹配随机候选
+  limitation: 当前只证明SAE decoder重建空间内线性probe上的因果效应

@@ -7,3 +7,17 @@ min_decoder_projection: 0.025
 min_ablation_effect: 0.05
 max_false_negatives_per_parent: 200
 
+# 只用训练发现子集选择规则，验证子集用于诊断，test 用于最终结论
+discovery_fit_fraction: 0.8
+
+# absorption 候选必须覆盖父特征漏检，并且对应具体 fine 子类
+min_candidate_support: 3
+min_child_purity: 0.30
+min_child_lift: 1.20
+max_child_specificity_q_value: 0.20
+max_absorption_candidates: 5
+child_specificity_null_repeats: 100
+
+# 随机候选同时匹配 firing rate、decoder norm 和 parent projection
+matched_random_repeats: 100
+matched_random_pool_size: 10

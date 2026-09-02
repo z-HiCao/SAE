@@ -7,3 +7,18 @@ learning_rate: 0.001
 l1_coefficient: 0.001
 activation_threshold: 0.000001
 
+# 在训练集内部留出验证集选模型，最终指标只在共享测试集上计算
+validation_fraction: 0.20
+
+# 同时扫描 ReLU+L1 与 BatchTopK，避免把一个不稀疏的解误当成 SAE 成功结果
+expansion_factors: [4]
+l1_coefficients: [0.001, 0.01, 0.05]
+topk_values: [2, 4, 8]
+
+# 优先从同时满足重建与稀疏条件的候选中选择概念 F1 更高者
+selection_min_r2: 0.95
+selection_max_l0: 8.0
+
+# raw neuron 与 SAE latent 使用相同的验证阈值协议
+interpretability_threshold_quantiles: [0.0, 0.50, 0.75, 0.90, 0.95, 0.99]
+min_purity_support: 10

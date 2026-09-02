@@ -2,20 +2,23 @@ flowchart TD
     A[CIFAR-100 图像与层级标签] --> B[共享索引与120维概念矩阵]
     B --> C[P01 低维重建]
     C --> D[瓶颈激活 H]
-    D --> E[P02 ReLU+L1 SAE]
+    D --> E[P02 ReLU+L1与BatchTopK扫描]
     B --> E
-    E --> F[已知概念恢复与decoder匹配]
+    E --> F[raw对照、purity、一对一匹配、toy消融]
     F --> G[P03 CLIP激活]
     B --> G
     G --> H[Matryoshka BatchTopK SAE]
-    H --> I[top images、MS、R2、L0、probe干预]
+    H --> I[正激活top images、支持度MS、R2、L0]
+    I --> P[CLIP文本原型与logits注入/消融]
     I --> J[P04 复用CLIP激活]
     B --> K[同索引SigLIP激活]
     J --> L[双模型Universal SAE]
     K --> L
-    L --> M[cross-R2、FE、CFP]
-    E --> N[P05受控absorption]
-    M --> O[P05双VLM absorption]
+    L --> M[cross-R2、FE、CFP与逐latent语义对齐]
+    L --> Q[样本置换、latent置换与错配训练对照]
+    E --> N[P05受控表示discovery/validation/test]
+    M --> O[P05双VLM表示discovery/validation/test]
     B --> N
     B --> O
-
+    N --> R[固定child候选decoder消融与匹配随机对照]
+    O --> S[固定child候选decoder消融与匹配随机对照]

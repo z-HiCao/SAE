@@ -153,9 +153,10 @@ def run(config: dict[str, Any]) -> None:
     if selected_model is None:
         raise RuntimeError("没有找到原始稀疏设置下的 ReLU 模型")
     selected_model.eval()
-    train_hidden, _ = selected_model(train_concepts)
-    test_hidden, _ = selected_model(test_concepts)
-    feature_directions = selected_model.weight.T.detach()
+    with torch.no_grad():
+        train_hidden, _ = selected_model(train_concepts)
+        test_hidden, _ = selected_model(test_concepts)
+        feature_directions = selected_model.weight.T.detach()
     save_array(output / "train_hidden.npy", train_hidden.numpy())
     save_array(output / "test_hidden.npy", test_hidden.numpy())
     save_array(output / "feature_directions.npy", feature_directions.numpy())

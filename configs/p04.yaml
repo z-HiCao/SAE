@@ -1,6 +1,6 @@
 # 第四篇论文：在 CLIP 与 SigLIP 上学习共享 latent
 stage: p04
-second_model_name: google/siglip-base-patch16-224
+second_model_name: models/google-siglip-base-patch16-224
 second_model_kind: siglip
 model_batch_size: 8
 latent_dim: 512
@@ -10,3 +10,14 @@ steps: 2500
 learning_rate: 0.0003
 reconstruction_loss: l1
 
+# 同索引 latent 的跨模型语义对齐评价
+activation_threshold: 0.000001
+alignment_top_k: 20
+minimum_alignment_support: 10
+alignment_null_repeats: 100
+bootstrap_repeats: 500
+bootstrap_confidence: 0.95
+
+# 用完全相同结构和步数训练“错误图片配对”负对照
+train_shuffled_pair_control: true
+save_control_checkpoint: false

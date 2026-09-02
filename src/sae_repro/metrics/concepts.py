@@ -47,29 +47,15 @@ def dictionary_match_scores(
     return similarities.max(dim=1).values
 
 
-def top_activating_indices(latents: torch.Tensor, top_k: int) -> torch.Tensor:
-    """返回每个 latent 的 top activating 样本行号。"""
+def positive_top_activating_indices(
+    latents: torch.Tensor,
+    top_k: int,
+    activation_threshold: float = 0.0,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """只返回真正正激活的 top 样本，不足 top_k 的位置使用 -1。"""
     count = min(top_k, latents.shape[0])
-    return torch.topk(latents, count, dim=0).indices.T
-
-
-def class_centroid_weights(activations: torch.Tensor, labels: torch.Tensor, classes: int) -> torch.Tensor:
-    """以每类平均激活构造轻量、可审计的下游概念 probe。"""
-    weights = []
-    for class_id in range(classes):
-        mask = labels == class_id
-        if not torch.any(mask):
-            weights.append(torch.zeros(activations.shape[1], dtype=activations.dtype))
-        else:
-            weights.append(activations[mask].mean(dim=0))
-    return F.normalize(torch.stack(weights), dim=1)
-
-
-def latent_target_classes(latents: torch.Tensor, labels: torch.Tensor, classes: int) -> torch.Tensor:
-    """按各类别平均激活为每个 latent 指派一个候选 fine concept。"""
-    means = []
-    for class_id in range(classes):
-        mask = labels == class_id
-        means.append(latents[mask].mean(dim=0))
-    return torch.stack(means).argmax(dim=0)
-
+    values, indices = torch.topk(latents, count, dim=0)
+    rows = indices.T.contiguous()
+    positive = values.T > activation_threshold
+    rows[~positive] = -1
+    return rows, positive.sum(dim=1)
